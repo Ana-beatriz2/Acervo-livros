@@ -7,7 +7,7 @@ const livroSchema = new mongoose.Schema({
     editora: { type: String },
     valor: { type: Number },
     paginas: { type: Number },
-    autor: autorSchema
+    autor: autorSchema // embedding
 }, { versionKey: false });
 
 const livro = mongoose.model("livros", livroSchema);
