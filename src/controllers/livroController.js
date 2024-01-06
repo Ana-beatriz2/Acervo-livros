@@ -1,3 +1,4 @@
+import { autor } from "../models/Autor.js";
 import livro from "../models/Livro.js";
 
 class LivroController {
@@ -11,8 +12,9 @@ class LivroController {
     };
 
     static async listarLivro(req, res) {
+        const { id } = req.params;
+
         try{
-            const { id } = req.params;
             const livroRetorno = await livro.findById(id);
             return res.status(200).json(livroRetorno);
         } catch (error){
@@ -21,8 +23,13 @@ class LivroController {
     };
 
     static async cadastraLivro(req, res) {
+        const novoLivro = req.body;
+
         try{
-            const livroCadastrado = await livro.create(req.body);
+            const autorEncontrado = await autor.findById(novoLivro.autor);
+            const livroCompleto = {...novoLivro, autor: {...autorEncontrado._doc}};
+            const livroCadastrado = await livro.create(livroCompleto);
+            
             return res.status(201).json({message: "Livro cadastrado com sucesso!", Livro: livroCadastrado});
         } catch (error){
             console.log(error)
@@ -31,8 +38,9 @@ class LivroController {
     };
 
     static async atualizaLivro(req, res) {
+        const { id } = req.params;
+
         try{
-            const { id } = req.params;
             await livro.findByIdAndUpdate(id, req.body);
             return res.status(200).json({message: "Livro atualizado com sucesso!"});
         } catch (error){
@@ -41,8 +49,9 @@ class LivroController {
     };
 
     static async deletaLivro(req, res) {
+        const { id } = req.params;
+
         try{
-            const { id } = req.params;
             await livro.findByIdAndDelete(id);
             return res.status(200).json({message: "Livro deletado com sucesso!"});
         } catch (error){
