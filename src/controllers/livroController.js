@@ -2,7 +2,7 @@ import { autor } from "../models/Autor.js";
 import livro from "../models/Livro.js";
 
 class LivroController {
-    static async listarLivros(req, res) {
+    static async listaLivros(req, res) {
         try{
             const livros = await livro.find({});
             return res.status(200).json(livros);
@@ -11,7 +11,7 @@ class LivroController {
         }
     };
 
-    static async listarLivro(req, res) {
+    static async listaLivro(req, res) {
         const { id } = req.params;
 
         try{
@@ -21,6 +21,17 @@ class LivroController {
             return res.status(500).json({message: `${error.message} - erro ao listar livro!`});
         }
     };
+
+    static async listaLivroPorEditora(req, res) {
+        const { editora } = req.query;
+
+        try{
+           const livrosPorEditora = await livro.find({editora});
+           return res.status(200).json(livrosPorEditora); 
+        } catch(error){
+            return res.status(500).json({message: "Erro ao retornar livro!"});
+        }
+    }
 
     static async cadastraLivro(req, res) {
         const novoLivro = req.body;
