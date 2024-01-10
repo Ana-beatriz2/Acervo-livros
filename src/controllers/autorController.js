@@ -1,17 +1,16 @@
-import mongoose from "mongoose";
 import { autor } from "../models/Autor.js";
 
 class AutorController {
-    static async listaAutores(req, res) {
+    static async listaAutores(req, res, next) {
         try{
             const autores = await autor.find({});
             return res.status(200).json(autores);
         } catch (error){
-            return res.status(500).json({message: `${error.message} - Erro ao retornar autores!`});
+            next(error);
         }
     }
 
-    static async listaAutor(req, res) {
+    static async listaAutor(req, res, next) {
         const { id } = req.params;
 
         try{
@@ -23,42 +22,39 @@ class AutorController {
             
             return res.status(404).json({message: "Autor não encontrado!"});
         } catch (error){
-            if (error instanceof mongoose.Error.CastError){
-                return res.status(400).json({message: "Um ou mais dados fornecidos estão incorretos."});
-            }
-
-            return res.status(500).json({message: `${error.message} - Erro ao retornar autor!`});
+            next(error);
         }
+            
     }
 
-    static async cadastraAutor(req, res){
+    static async cadastraAutor(req, res, next){
         try{
             const autorCadastrado = await autor.create(req.body);
             return res.status(201).json({message: "Autor criado com sucesso!", Autor: autorCadastrado});
         } catch (error) {
-            return res.status(500).json({message: `${error.message} - Erro ao criar autor!`});
+            next(error);
         }
     }
 
-    static async atualizaAutor(req, res) {
+    static async atualizaAutor(req, res, next) {
         const { id } = req.params;
 
         try{
             await autor.findByIdAndUpdate(id, req.body);
             return res.status(200).json({message: "Autor atualizado com sucesso!"});
         } catch (error){
-            return res.status(500).json({message: `${error.message} - erro ao atualizar autor!`});
+            next(error);
         }
     }
 
-    static async deletaAutor(req, res) {
+    static async deletaAutor(req, res, next) {
         const { id } = req.params;
 
         try{
             await autor.findByIdAndDelete(id);
             return res.status(200).json({message: "Autor deletado com sucesso!"});
         } catch (error){
-            return res.status(500).json({message: `${error.message} - erro ao deletar autor!`});
+            next(error);
         }
     }
 }
