@@ -6,8 +6,8 @@ const routes = (app) => {
     app.route("/").get((req, res) => res.status(200).send("Curso de Nodejs"));
 
     app.use(express.json(), 
-    livros,
-    autores
+        livros,
+        autores
     );
 };
 
