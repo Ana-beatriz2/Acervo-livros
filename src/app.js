@@ -19,7 +19,7 @@ conexao.once("open", () => {
 const app = express();
 routes(app);
 
-app.use(manipulador404);
+app.use(manipulador404); // para rotas que não forem encontradas
 app.use(manipuladorDeErros);
 
 export default app;
