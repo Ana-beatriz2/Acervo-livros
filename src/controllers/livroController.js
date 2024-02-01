@@ -1,3 +1,4 @@
+import NaoEncontrado from "../erros/NaoEncontrado.js";
 import { autor } from "../models/Autor.js";
 import livro from "../models/Livro.js";
 
@@ -5,6 +6,10 @@ class LivroController {
     static async listaLivros(req, res, next) {
         try{
             const livros = await livro.find({});
+            if (!livros.length){
+                return next(new NaoEncontrado("Nenhum livro foi encontrado!"));
+            } 
+                
             return res.status(200).json(livros);
         } catch (error){
             next(error);
@@ -16,6 +21,11 @@ class LivroController {
 
         try{
             const livroRetorno = await livro.findById(id);
+
+            if (!livroRetorno){
+                return next(new NaoEncontrado("Livro não encontrado!"));
+            } 
+
             return res.status(200).json(livroRetorno);
         } catch (error){
             next(error);
@@ -27,6 +37,11 @@ class LivroController {
 
         try{
             const livrosPorEditora = await livro.find({editora});
+
+            if (!livrosPorEditora.length){
+                return next(new NaoEncontrado("Nenhum livro foi encontrado!"));
+            } 
+
             return res.status(200).json(livrosPorEditora); 
         } catch(error){
             next(error);
@@ -51,7 +66,12 @@ class LivroController {
         const { id } = req.params;
 
         try{
-            await livro.findByIdAndUpdate(id, req.body);
+            const livroParaAtualizacao = await livro.findByIdAndUpdate(id, req.body);
+
+            if (!livroParaAtualizacao){
+                return next(new NaoEncontrado("Livro não encontrado!"));
+            }
+
             return res.status(200).json({message: "Livro atualizado com sucesso!"});
         } catch (error){
             next(error);
@@ -62,7 +82,12 @@ class LivroController {
         const { id } = req.params;
 
         try{
-            await livro.findByIdAndDelete(id);
+            const livroParaExclusao = await livro.findByIdAndDelete(id);
+
+            if (!livroParaExclusao){
+                return next(new NaoEncontrado("Livro não encontrado!"));
+            }
+
             return res.status(200).json({message: "Livro deletado com sucesso!"});
         } catch (error){
             next(error);

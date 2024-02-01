@@ -5,6 +5,11 @@ class AutorController {
     static async listaAutores(req, res, next) {
         try{
             const autores = await autor.find({});
+
+            if (!autores.length){
+                return next(new NaoEncontrado("Nenhum autor foi encontrado!"));
+            } 
+
             return res.status(200).json(autores);
         } catch (error){
             next(error);
@@ -17,16 +22,14 @@ class AutorController {
         try{
             const autorRetornado = await autor.findById(id);
 
-            if (autorRetornado){
-                return res.status(200).json(autorRetornado);
-            } else{
-                next(new NaoEncontrado("Autor não encontrado!"));
-            }
-        
+            if (!autorRetornado){
+                return next(new NaoEncontrado("Autor não encontrado!"));
+            } 
+            
+            return res.status(200).json(autorRetornado);
         } catch (error){
             next(error);
         }
-            
     }
 
     static async cadastraAutor(req, res, next){
@@ -42,7 +45,12 @@ class AutorController {
         const { id } = req.params;
 
         try{
-            await autor.findByIdAndUpdate(id, req.body);
+            const autorParaAtualizacao = await autor.findByIdAndUpdate(id, req.body);
+
+            if (!autorParaAtualizacao){
+                return next(new NaoEncontrado("Autor não encontrado!"));
+            } 
+
             return res.status(200).json({message: "Autor atualizado com sucesso!"});
         } catch (error){
             next(error);
@@ -53,7 +61,12 @@ class AutorController {
         const { id } = req.params;
 
         try{
-            await autor.findByIdAndDelete(id);
+            const autorParaExclusao = await autor.findByIdAndDelete(id);
+
+            if (!autorParaExclusao){
+                return next(new NaoEncontrado("Autor não encontrado!"));
+            } 
+
             return res.status(200).json({message: "Autor deletado com sucesso!"});
         } catch (error){
             next(error);
